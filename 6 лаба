@@ -1,0 +1,103 @@
+'''
+Задание состоит из двух частей.
+1 часть – написать программу в соответствии со своим вариантом задания. Написать 2 варианта формирования
+(алгоритмический и с помощью функций Питона), сравнив по времени их выполнение.
+2 часть – усложнить написанную программу, введя по своему усмотрению в условие минимум одно ограничение на
+характеристики объектов (которое будет сокращать количество переборов)  и целевую функцию для нахождения оптимального  решения.
+
+
+Вариант 11. Сгенерировать все возможные варианты двумерного массива (К*Т) из чисел 0, 1 и 2. '''
+
+import itertools
+import timeit
+
+#С использованием функций
+def functional_generate(k, t):
+
+  # Создаем массив всех возможных значений для каждой ячейки
+  values = [0, 1, 2]
+  # Используем функцию itertools.product для генерации всех возможных комбинаций
+  for combination in itertools.product(values, repeat=k * t):
+    # Преобразуем комбинацию в двумерный массив
+    array = [list(combination[i:i + t]) for i in range(0, k * t, t)]
+    yield array
+
+
+#Алгоритмический вариант
+def algoritmic_generate(k, t):
+
+  current_array = [0] * (k * t)
+  for i in range(3):
+    current_array[0] = i
+
+    def generate_recursive(index):
+      if index == k * t:
+        yield [list(current_array[i:i + t]) for i in range(0, k * t, t)]
+      else:
+        for value in range(3):
+          current_array[index] = value
+          yield from generate_recursive(index + 1)
+
+    yield from generate_recursive(1)
+
+# Пример использования:
+k = 2  # Число строк
+t = 2  # Число столбцов
+
+for array in functional_generate(k, t):
+  print(array)
+
+
+
+# Вычисление времени
+functioanal_time = timeit.timeit(lambda: functional_generate(k,t),number = 1000000)
+algoritmic_time = timeit.timeit(lambda: algoritmic_generate(k, t),number = 1000000)
+
+# Вывод времени
+print("| C помощью функций Питона (сек)  | Aлгоритмический (сек)")
+print("-" * 50)
+print(f'{functioanal_time:.15f}\t \t \t \t   {algoritmic_time:.15f}')
+
+
+print('\n\n\n\n\n\n')
+print('#2 часть - Усложненная программа')
+
+
+
+
+# 2 часть - Усложненная программа
+'''Сгенерировать все возможные варианты двумерного массива (К*Т) из чисел 0, 1 и 2.
+   Сумма чисел массива должна быть четной'''
+
+
+def even_generate(k, t):
+
+  # Создаем массив для хранения текущей комбинации значений
+  current_array = [0] * (k * t)
+
+  # Внешний цикл: перебирает все возможные значения для первой ячейки
+  for i in range(3):
+    current_array[0] = i
+
+    # Внутренний цикл: рекурсивно перебирает все возможные значения
+    # для остальных ячеек
+    def generate_recursive(index):
+      if index == k * t:
+        # Если достигнута последняя ячейка, то проверяем сумму
+        if sum(current_array) % 2 == 0:
+          # Если сумма четная, то возвращаем текущий массив
+          yield [list(current_array[i:i + t]) for i in range(0, k * t, t)]
+      else:
+        # Перебирает все возможные значения для текущей ячейки
+        for value in range(3):
+          current_array[index] = value
+          # Рекурсивно вызываем функцию для следующей ячейки
+          yield from generate_recursive(index + 1)
+
+    # Запускаем рекурсивную функцию с первой ячейкой
+    yield from generate_recursive(1)
+
+
+for array in even_generate(k, t):
+  print(array)
+
