@@ -52,6 +52,7 @@ for array in algoritmic_generate(k, t):
   print(array)
 
 
+
 # Вычисление времени
 functioanal_time = timeit.timeit(lambda: functional_generate(k,t),number = 1000000)
 algoritmic_time = timeit.timeit(lambda: algoritmic_generate(k, t),number = 1000000)
@@ -87,7 +88,7 @@ def even_generate(k, t):
     def generate_recursive(index):
       if index == k * t:
         # Если достигнута последняя ячейка, то проверяем сумму
-        if sum(current_array) % 2 == 0:
+        if sum(current_array) > 4 :
           # Если сумма четная, то возвращаем текущий массив
           yield [list(current_array[i:i + t]) for i in range(0, k * t, t)]
       else:
@@ -101,6 +102,43 @@ def even_generate(k, t):
     yield from generate_recursive(1)
 
 
+
+
+# Оптимальный вариант
+def optimal_generate(k, t):
+
+  # Создаем массив для хранения текущей комбинации значений
+  current_array = [0] * (k * t)
+
+  # Внешний цикл: перебирает все возможные значения для первой ячейки
+  for i in range(3):
+    current_array[0] = i
+
+    # Внутренний цикл: рекурсивно перебирает все возможные значения
+    # для остальных ячеек
+    def generate_recursive(index):
+      if index == k * t:
+        # Если достигнута последняя ячейка, то проверяем сумму
+        if sum(current_array) == 6 :
+          # Если сумма четная, то возвращаем текущий массив
+          yield [list(current_array[i:i + t]) for i in range(0, k * t, t)]
+      else:
+        # Перебирает все возможные значения для текущей ячейки
+        for value in range(3):
+          current_array[index] = value
+          # Рекурсивно вызываем функцию для следующей ячейки
+          yield from generate_recursive(index + 1)
+
+    # Запускаем рекурсивную функцию с первой ячейкой
+    yield from generate_recursive(1)
+
+
+
 for array in even_generate(k, t):
   print(array)
+print('\n\n\n\n\n\n')
+print('Оптимальный вариант')
+for array in optimal_generate(k, t):
+  print(array)
+
 
