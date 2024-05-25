@@ -44,9 +44,12 @@ def algoritmic_generate(k, t):
 k = 2  # Число строк
 t = 2  # Число столбцов
 
+print('Алгоритмический вариант')
 for array in functional_generate(k, t):
   print(array)
-
+print('Вариант с исполозованием функций Питона')
+for array in algoritmic_generate(k, t):
+  print(array)
 
 
 # Вычисление времени
