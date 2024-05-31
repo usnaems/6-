@@ -8,6 +8,8 @@
 
 Вариант 11. Сгенерировать все возможные варианты двумерного массива (К*Т) из чисел 0, 1 и 2. '''
 
+
+
 import itertools
 import timeit
 
@@ -41,8 +43,8 @@ def algoritmic_generate(k, t):
     yield from generate_recursive(1)
 
 # Пример использования:
-k = 2  # Число строк
-t = 2  # Число столбцов
+k = int(input('Количество строк (K):'))  # Число строк
+t = int(input('Количество столбцов (T):'))  # Число столбцов
 
 print('Алгоритмический вариант')
 for array in functional_generate(k, t):
@@ -140,5 +142,49 @@ print('\n\n\n\n\n\n')
 print('Оптимальный вариант')
 for array in optimal_generate(k, t):
   print(array)
+
+
+
+'''Часть 2: Усложнение задачи
+  Ограничение и целевая функция
+  
+Ограничение: 
+- Сумма элементов в каждой строке должна быть не больше 4.
+
+Целевая функция:
+- Максимизация суммы элементов массива.'''
+
+
+
+def generate_arrays_with_constraint(k, t):
+    """
+    Генерирует все возможные варианты двумерного массива (К*Т) из чисел 0, 1 и 2
+    с учетом ограничения на сумму элементов в строке и находит оптимальный вариант.
+    """
+    optimal_array = None
+    max_sum = -1
+
+    for combination in itertools.product(range(3), repeat=k*t):
+        # Разбиение комбинации на строки массива
+        array = [list(combination[j:j+k]) for j in range(0, len(combination), k)]
+
+        # Проверка ограничения на сумму элементов в строке
+        valid = True
+        for row in array:
+            if sum(row) > 4:
+                valid = False
+                break
+
+        if valid:
+            # Подсчет суммы элементов массива
+            array_sum = sum(sum(row) for row in array)
+
+            # Обновление оптимального массива и максимальной суммы
+            if array_sum > max_sum:
+                optimal_array = array
+                max_sum = array_sum
+
+    return optimal_array, max_sum
+
 
 
